@@ -793,13 +793,6 @@
     "updatedAt": "2020-02-06T16:22:51.368Z"
   },
   {
-    "objectId": "OA2NEI4dqK",
-    "ProgrammingLanguage": "CODE",
-    "Source": "http://en.wikipedia.org/wiki/CODE_(programming_language)",
-    "createdAt": "2020-02-06T16:22:51.368Z",
-    "updatedAt": "2020-02-06T16:22:51.368Z"
-  },
-  {
     "objectId": "rFE1qDEJ4K",
     "ProgrammingLanguage": "Cobra",
     "Source": "http://en.wikipedia.org/wiki/Cobra_(programming_language)",
@@ -1493,13 +1486,6 @@
     "updatedAt": "2020-02-06T16:22:51.408Z"
   },
   {
-    "objectId": "Hv7KOASADK",
-    "ProgrammingLanguage": "FOCUS",
-    "Source": "http://en.wikipedia.org/wiki/FOCUS",
-    "createdAt": "2020-02-06T16:22:51.408Z",
-    "updatedAt": "2020-02-06T16:22:51.408Z"
-  },
-  {
     "objectId": "nQo0fJHZdH",
     "ProgrammingLanguage": "Flex",
     "Source": "http://en.wikipedia.org/wiki/Flex_(programming_language)",
@@ -2107,13 +2093,6 @@
     "Source": "http://en.wikipedia.org/wiki/JAL_(compiler)",
     "createdAt": "2020-02-06T16:22:51.408Z",
     "updatedAt": "2020-02-06T16:22:51.408Z"
-  },
-  {
-    "objectId": "taEov1Jrvb",
-    "ProgrammingLanguage": "Joy",
-    "Source": "http://en.wikipedia.org/wiki/Joy_(programming_language)",
-    "createdAt": "2020-02-06T16:22:51.524Z",
-    "updatedAt": "2020-02-06T16:22:51.524Z"
   },
   {
     "objectId": "kaDfqqsDRF",
