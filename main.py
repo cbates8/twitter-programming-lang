@@ -1,4 +1,3 @@
-from nltk import collocations
 from searchtweets import ResultStream, gen_request_parameters, load_credentials
 import json, nltk
 import matplotlib.pyplot as plt
@@ -10,8 +9,6 @@ def GenQuery():
     file = open("All_Programming_Languages.json","r")
     info = file.read()
     languages = json.loads(info)
-    #for language in languages["results"]:
-        #print(language["ProgrammingLanguage"])
     return [lang["ProgrammingLanguage"] for lang in languages["results"]]
 
 def main():
@@ -24,16 +21,12 @@ def main():
                                         env_overwrite=False)
 
     query = gen_request_parameters("(favorite programming language) -is:retweet -has:media", granularity=False, results_per_call=10)
-    #print(f"Query:\n{query}\n\n")
 
     rs = ResultStream(request_parameters=query,
                     max_results=10,
                     max_pages=1,
                     **search_args)
 
-    #print(f"\n{rs}\n")
-
-    #print("Tweets:\n")
     all_tweets = list(rs.stream())
 
     # using unidecode to prevent emoji/accents printing
@@ -49,11 +42,8 @@ def main():
             wrds = t["text"].replace("“", "")
             wrds = wrds.replace("?", "")
             wrds = re.split('\n |\ |, |\*|\n', wrds)
-            #print(wrds)
             words = [w for w in wrds if w.lower() not in stopwords and "http" not in w]
             tweets[t["id"]] = " ".join(words)
-            #print(t["id"])
-            #print(t["text"], " ".join(words), "\n")
             for lang in GenQuery():
                 if lang in wrds or lang.lower() in wrds:
                     all_languages += f" {lang} "
@@ -62,7 +52,6 @@ def main():
                     else:
                         languages[lang] += f" {' '.join(words)} "
 
-    #print(len(tweets))
     all_words = " ".join([tweets[t] for t in tweets.keys()])
     
     wordcloud = WordCloud()
@@ -79,7 +68,6 @@ def main():
     # WordCloud for only language references
     print("Generating wordcloud for only language references...")
     all_languages = all_languages.replace("C++", "Cpp")
-    #print(all_languages)
     wordcloud.generate(all_languages)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
@@ -92,7 +80,6 @@ def main():
         if lang in languages.keys():
             words = languages[lang].replace("C++", "Cpp")
             wordcloud.generate(words)
-            #print(lang, "\n", words, "\n\n")
             plt.imshow(wordcloud, interpolation='bilinear')
             plt.axis("off")
             plt.savefig(f"./figures/{lang}_Wordcloud.png")
@@ -100,5 +87,4 @@ def main():
 
 
 if __name__ == "__main__":
-    #GenQuery()
     main()
