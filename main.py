@@ -1,7 +1,6 @@
-'''
-Casey Bates and Luke Manzitto
-CSCI 182
-'''
+# Luke Manzitto and Casey Bates
+# CSCI 182 - Web and Data Mining
+
 from searchtweets import ResultStream, gen_request_parameters, load_credentials
 from nltk.sentiment import SentimentIntensityAnalyzer
 import json, nltk
