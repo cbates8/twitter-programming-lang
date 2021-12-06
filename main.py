@@ -2,6 +2,7 @@ from searchtweets import ResultStream, gen_request_parameters, load_credentials
 from nltk.sentiment import SentimentIntensityAnalyzer
 import json, nltk
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 from wordcloud import WordCloud
@@ -25,23 +26,24 @@ def main():
                                         yaml_key="search_tweets_v2",
                                         env_overwrite=False)
 
-    query = gen_request_parameters("(favorite programming language) -is:retweet -has:media", granularity=False, results_per_call=10)
+    query = gen_request_parameters("(favorite programming language) -is:retweet -has:media", granularity=False, results_per_call=100)
+    all_tweets = []
+    for i in range(10):
+        rs = ResultStream(request_parameters=query,
+                        max_results=100,
+                        max_pages=10,
+                        **search_args)
+        rsList = list(rs.stream())
+        all_tweets = all_tweets + rsList
+    print(all_tweets)
 
-    rs = ResultStream(request_parameters=query,
-                    max_results=10,
-                    max_pages=1,
-                    **search_args)
-
-    all_tweets = list(rs.stream())
-
-    # using unidecode to prevent emoji/accents printing
     tweets = {}
 
     languages = {}
 
     all_languages = ""
 
-    for data in all_tweets[0:10]:
+    for data in all_tweets[0:100]:
         for tweet in list(dict(data)["data"]):
             t = dict(tweet)
             wrds = t["text"].replace("“", "")
@@ -61,21 +63,19 @@ def main():
     sia_scores = {}
     for key,value in languages.items():
         sia_scores[key] = sia.polarity_scores(value)
-    xValues = []
-    yValues = []
-    zValues = []
-    for lang in languages.values():
-        if lang in sia_scores.keys():
-            xValues.append(sia_scores[lang]["neg"])
-            yValues.append(sia_scores[lang]["neu"])
-            zValues.append(sia_scores[lang]["pos"])
-    x = np.array(xValues)
-    y = np.array(yValues)
-    z = np.array(zValues)
+    df = pd.DataFrame.from_dict(sia_scores)
+    print("Creating polarity score csv...")
+    df.to_csv("./polarity_scores.csv")
 
-    plt.figure(figsize=(8,8))
-    ax = plt.axes(projection="3d")
-    ax.scatter(x,y,z)
+    vals = []
+    for lang in languages.keys():
+        if lang in sia_scores.keys():
+            vals.append(sia_scores[lang]["compound"])
+
+    plt.figure(figsize=(20,8))
+    ax = plt.axes()
+    ax.bar(sia_scores.keys(),vals,width=0.6)
+    plt.tight_layout()
     plt.savefig(f"./polarity_scores.png")
     print(f"Saved as 'polarity_scores.png'\n")
 
