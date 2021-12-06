@@ -18,7 +18,7 @@ def GetLanguages():
     return [lang["ProgrammingLanguage"] for lang in languages["results"]]
 
 def main():
-
+    
     # create stopword list
     stopwords = nltk.corpus.stopwords.words("english")
 
@@ -26,7 +26,6 @@ def main():
                                         yaml_key="search_tweets_v2",
                                         env_overwrite=False)
 
-<<<<<<< HEAD
     query = gen_request_parameters("(favorite programming language) -is:retweet lang:en", granularity=False, results_per_call=100)
     all_tweets = []
     rs = ResultStream(request_parameters=query,
@@ -40,18 +39,6 @@ def main():
                     max_pages=10,
                     **search_args)
     all_tweets = all_tweets + list(rs.stream())
-=======
-    query = gen_request_parameters("(favorite programming language)", granularity=False, results_per_call=100)
-    all_tweets = []
-    for i in range(10):
-        rs = ResultStream(request_parameters=query,
-                        max_results=100,
-                        max_pages=10,
-                        **search_args)
-        rsList = list(rs.stream())
-        all_tweets = all_tweets + rsList
-
->>>>>>> 3f4deb60f6995507a125d2e2cd128999325244dd
     tweets = {}
 
     languages = {}
@@ -81,10 +68,6 @@ def main():
     df.to_csv("./polarity_scores.csv")
 
     vals = []
-<<<<<<< HEAD
-    xticks = []
-=======
->>>>>>> 3f4deb60f6995507a125d2e2cd128999325244dd
     for lang in languages.keys():
         if lang in sia_scores.keys():
             vals.append(sia_scores[lang]["compound"])
