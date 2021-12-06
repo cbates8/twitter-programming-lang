@@ -64,7 +64,7 @@ def main():
     xValues = []
     yValues = []
     zValues = []
-    for lang in languages.values():
+    for lang in languages.keys():
         if lang in sia_scores.keys():
             xValues.append(sia_scores[lang]["neg"])
             yValues.append(sia_scores[lang]["neu"])
