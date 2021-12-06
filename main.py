@@ -1,13 +1,13 @@
+'''
+Casey Bates and Luke Manzitto
+CSCI 182
+'''
 from searchtweets import ResultStream, gen_request_parameters, load_credentials
 from nltk.sentiment import SentimentIntensityAnalyzer
 import json, nltk
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 from wordcloud import WordCloud
-import re
-
 
 # currently will print all programming languages from dataset
 def GetLanguages():
