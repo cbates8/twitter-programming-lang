@@ -26,6 +26,7 @@ def main():
                                         yaml_key="search_tweets_v2",
                                         env_overwrite=False)
 
+<<<<<<< HEAD
     query = gen_request_parameters("(favorite programming language) -is:retweet lang:en", granularity=False, results_per_call=100)
     all_tweets = []
     rs = ResultStream(request_parameters=query,
@@ -39,6 +40,18 @@ def main():
                     max_pages=10,
                     **search_args)
     all_tweets = all_tweets + list(rs.stream())
+=======
+    query = gen_request_parameters("(favorite programming language)", granularity=False, results_per_call=100)
+    all_tweets = []
+    for i in range(10):
+        rs = ResultStream(request_parameters=query,
+                        max_results=100,
+                        max_pages=10,
+                        **search_args)
+        rsList = list(rs.stream())
+        all_tweets = all_tweets + rsList
+
+>>>>>>> 3f4deb60f6995507a125d2e2cd128999325244dd
     tweets = {}
 
     languages = {}
@@ -48,18 +61,16 @@ def main():
     for data in all_tweets[0:100]:
         for tweet in list(dict(data)["data"]):
             t = dict(tweet)
-            wrds = t["text"].replace("“", "")
-            wrds = wrds.replace("?", "")
-            wrds = re.split('\n |\ |, |\*|\n', wrds)
-            words = [w for w in wrds]
+            words = nltk.word_tokenize(t["text"])
             tweets[t["id"]] = " ".join(words)
             for lang in GetLanguages():
-                if lang in wrds or lang.lower() in wrds:
+                if lang in words or lang.lower() in words:
                     all_languages += f" {lang} "
                     if lang not in languages.keys():
                         languages[lang] = " ".join(words)
                     else:
                         languages[lang] += f" {' '.join(words)} "
+
     sia = SentimentIntensityAnalyzer()
     print("Generating Sentiment Polarity Scores for languages...")
     sia_scores = {}
@@ -70,7 +81,10 @@ def main():
     df.to_csv("./polarity_scores.csv")
 
     vals = []
+<<<<<<< HEAD
     xticks = []
+=======
+>>>>>>> 3f4deb60f6995507a125d2e2cd128999325244dd
     for lang in languages.keys():
         if lang in sia_scores.keys():
             vals.append(sia_scores[lang]["compound"])
@@ -85,25 +99,29 @@ def main():
     for data in all_tweets[0:10]:
         for tweet in list(dict(data)["data"]):
             t = dict(tweet)
-            wrds = t["text"].replace("“", "")
-            wrds = wrds.replace("?", "")
-            wrds = re.split('\n |\ |, |\*|\n', wrds)
-            words = [w for w in wrds if w.lower() not in stopwords and "http" not in w]
-            tweets[t["id"]] = " ".join(words)
+            wrds = nltk.word_tokenize(t["text"])
+            words = [w for w in wrds if (w.isalpha() or 'C++' in w or 'C#' in w) and w.lower() not in stopwords and "http" not in w]
+            tweets[t["id"]] = words
             for lang in GetLanguages():
-                if lang in wrds or lang.lower() in wrds:
+                if lang in words or lang.lower() in words:
                     all_languages += f" {lang} "
                     if lang not in languages.keys():
                         languages[lang] = " ".join(words)
                     else:
                         languages[lang] += f" {' '.join(words)} "
 
-    all_words = " ".join([tweets[t] for t in tweets.keys()])
-    
-    wordcloud = WordCloud()
+    all_words = []
+    for t in tweets.keys():
+        for w in tweets[t]:
+            all_words.append(w)
+
+    wordcloud = WordCloud(collocations=False)
 
     # Wordcloud for all tweets
     print("Generating wordcloud for all tweets...")
+    all_words = " ".join(all_words)
+    all_words = all_words.replace("C++", "Cpp")
+    all_words = all_words.replace("C#", "Csharp")
     wordcloud.generate(all_words)
     plt.figure(figsize= (8, 8))
     plt.imshow(wordcloud, interpolation='bilinear')
@@ -114,6 +132,7 @@ def main():
     # WordCloud for only language references
     print("Generating wordcloud for only language references...")
     all_languages = all_languages.replace("C++", "Cpp")
+    all_words = all_words.replace("C#", "Csharp")
     wordcloud.generate(all_languages)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
