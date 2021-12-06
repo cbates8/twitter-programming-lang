@@ -26,17 +26,19 @@ def main():
                                         yaml_key="search_tweets_v2",
                                         env_overwrite=False)
 
-    query = gen_request_parameters("(favorite programming language) -is:retweet -has:media", granularity=False, results_per_call=100)
+    query = gen_request_parameters("(favorite programming language) -is:retweet lang:en", granularity=False, results_per_call=100)
     all_tweets = []
-    for i in range(10):
-        rs = ResultStream(request_parameters=query,
-                        max_results=100,
-                        max_pages=10,
-                        **search_args)
-        rsList = list(rs.stream())
-        all_tweets = all_tweets + rsList
-    print(all_tweets)
-
+    rs = ResultStream(request_parameters=query,
+                    max_results=100,
+                    max_pages=10,
+                    **search_args)
+    all_tweets = list(rs.stream())
+    query = gen_request_parameters("(worst programming language) -is:retweet lang:en", granularity=False, results_per_call=100)
+    rs = ResultStream(request_parameters=query,
+                    max_results=100,
+                    max_pages=10,
+                    **search_args)
+    all_tweets = all_tweets + list(rs.stream())
     tweets = {}
 
     languages = {}
@@ -63,17 +65,12 @@ def main():
     sia_scores = {}
     for key,value in languages.items():
         sia_scores[key] = sia.polarity_scores(value)
-<<<<<<< HEAD
     df = pd.DataFrame.from_dict(sia_scores)
     print("Creating polarity score csv...")
     df.to_csv("./polarity_scores.csv")
 
     vals = []
-=======
-    xValues = []
-    yValues = []
-    zValues = []
->>>>>>> 127a68abf1e175cc030ae2f068d1f69c332aa0d6
+    xticks = []
     for lang in languages.keys():
         if lang in sia_scores.keys():
             vals.append(sia_scores[lang]["compound"])
